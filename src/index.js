@@ -1,21 +1,13 @@
 import { server } from './server.js';
-import mongoose, { Types } from 'mongoose';
-import { compare, hash } from 'bcrypt';
 import { connectToMongoose } from './initializers/connectToMongoose.js';
-import * as jwt from 'jsonwebtoken';
-
-const { sign, verify } = jwt.default;
-
-//создаем модель монго
-
-const User = mongoose.model('User', {
-  _id: mongoose.Types.ObjectId,
-  username: String,
-  email: String,
-  password: String,
-});
-
-const SECRET_KEY = 'Secret key';
+import {
+  userEmailSchema,
+  userPasswordSchema,
+  userUsernameSchema,
+} from './schemas/userSchemas.js';
+import { createUserRoute } from './routes/user/createUser.js';
+import { loginUserRoute } from './routes/user/loginUser.js';
+import { authUser } from './hooks/authUser.js';
 
 server.register(
   (instance, opts, done) => {
@@ -31,49 +23,15 @@ server.register(
           body: {
             type: 'object',
             properties: {
-              username: {
-                type: 'string',
-                minimum: 2,
-                maximum: 40,
-              },
-              email: {
-                type: 'string',
-                format: 'email',
-                minimum: 6,
-                maximum: 40,
-              },
-              password: {
-                type: 'string',
-                minimum: 8,
-                maximum: 20,
-              },
+              username: userUsernameSchema,
+              email: userEmailSchema,
+              password: userPasswordSchema,
             },
             required: ['username', 'email', 'password'],
           },
         },
       },
-      async function (request, reply) {
-        const { username, email, password } = request.body;
-
-        const currentUser = await User.findOne({ email, username });
-
-        if (currentUser) {
-          return reply.status(400).send({
-            message: 'User already exists',
-          });
-        }
-
-        const user = new User({
-          _id: new Types.ObjectId(),
-          username,
-          email,
-          password: await hash(password, 10),
-        });
-
-        await user.save();
-
-        reply.status(201).send({ message: 'Successful created' });
-      },
+      createUserRoute,
     );
 
     //login user
@@ -90,32 +48,15 @@ server.register(
             oneOf: [
               {
                 properties: {
-                  email: {
-                    type: 'string',
-                    format: 'email',
-                    minimum: 6,
-                    maximum: 40,
-                  },
-                  password: {
-                    type: 'string',
-                    minimum: 8,
-                    maximum: 20,
-                  },
+                  email: userEmailSchema,
+                  password: userPasswordSchema,
                 },
                 required: ['email', 'password'],
               },
               {
                 properties: {
-                  username: {
-                    type: 'string',
-                    minimum: 2,
-                    maximum: 40,
-                  },
-                  password: {
-                    type: 'string',
-                    minimum: 8,
-                    maximum: 20,
-                  },
+                  username: userUsernameSchema,
+                  password: userPasswordSchema,
                 },
                 required: ['username', 'password'],
               },
@@ -123,51 +64,14 @@ server.register(
           },
         },
       },
-      async function (request, reply) {
-        const { email, username, password } = request.body;
-
-        const currentUser = await User.findOne(
-          email ? { email } : { username },
-        );
-
-        if (!currentUser) {
-          return reply.status(400).send({
-            message: 'User not found',
-          });
-        }
-
-        const isPasswordCorrect = await compare(password, currentUser.password);
-        if (!isPasswordCorrect) {
-          return reply.status(400).send({
-            message: 'Password incorrect',
-          });
-        }
-
-        const token = sign({ id: currentUser._id }, SECRET_KEY, {
-          expiresIn: '2h',
-        });
-
-        return {
-          token,
-        };
-      },
+      loginUserRoute,
     );
 
     //create a protected route with preHandler (middleware), verify token
 
     instance.register(
       (protectedInstance, opts, done) => {
-        protectedInstance.addHook('preHandler', async (request, reply) => {
-          const token = request.headers.authorization;
-
-          try {
-            let decoded = verify(token, SECRET_KEY);
-          } catch (err) {
-            return reply.status(401).send({
-              message: 'Invalid token',
-            });
-          }
-        });
+        protectedInstance.addHook('preHandler', authUser);
 
         protectedInstance.get(
           '',
