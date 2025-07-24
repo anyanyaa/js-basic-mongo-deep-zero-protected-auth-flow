@@ -23,7 +23,7 @@ export const loginUserRoute = async (request, reply) => {
 
   const token = await userService.loginUser(currentUser._id);
 
-  reply.send({
+  reply.status(201).send({
     token,
   });
 };
