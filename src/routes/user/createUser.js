@@ -4,9 +4,10 @@ import { userService } from '../../services/user.service.js';
 export const createUserRoute = async (request, reply) => {
   const { username, email, password } = request.body;
 
-  const currentUser = await User.findOne({ email, username });
+  const currentUserByEmail = await User.findOne({ email });
+  const currentUserByUsername = await User.findOne({ username });
 
-  if (currentUser) {
+  if (currentUserByEmail || currentUserByUsername) {
     return reply.status(400).send({
       message: 'User already exists',
     });
