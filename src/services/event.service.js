@@ -2,10 +2,12 @@ import { EventModel } from '../db/Event.js';
 import { Types } from 'mongoose';
 
 export const eventService = {
-  async getEvents(userId) {
-    const events = await EventModel.find({ userId });
+  async getEvents(userId, limit, offset) {
+    const filter = { userId };
+    const events = await EventModel.find(filter).skip(offset).limit(limit);
+    const count = await EventModel.countDocuments(filter);
 
-    return events;
+    return { items: events, count };
   },
 
   async createEvent(title, plannedDate, userId) {

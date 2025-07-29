@@ -135,6 +135,21 @@ server.register(
                 },
                 required: ['authorization'],
               },
+              querystring: {
+                type: 'object',
+                properties: {
+                  limit: {
+                    type: 'number',
+                    minimum: 1,
+                    maximum: 30,
+                  },
+                  offset: {
+                    type: 'number',
+                    minimum: 0,
+                  },
+                },
+                required: ['limit', 'offset'],
+              },
             },
           },
           getEventsRoute,
