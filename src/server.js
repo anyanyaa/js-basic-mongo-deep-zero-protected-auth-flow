@@ -7,6 +7,14 @@ import {
 import { createUserRoute } from './routes/user/createUser.js';
 import { loginUserRoute } from './routes/user/loginUser.js';
 import { authUser } from './hooks/authUser.js';
+import { eventService } from './services/event.service.js';
+import {
+  eventAuthSchema,
+  eventPlannedDateSchema,
+  eventTitleSchema,
+} from './schemas/eventSchemas.js';
+import { createEventRoute } from './routes/event/createEvent.js';
+import { getEventsRoute } from './routes/event/getEvents.js';
 
 export const server = await initializeServer();
 
@@ -81,6 +89,56 @@ server.register(
     instance.register(
       (protectedInstance, opts, done) => {
         protectedInstance.addHook('preHandler', authUser);
+
+        //create event
+
+        protectedInstance.post(
+          '/event',
+          {
+            schema: {
+              tags: ['Events'],
+              description: 'Create event',
+              summary: 'Create event',
+              body: {
+                type: 'object',
+                properties: {
+                  title: eventTitleSchema,
+                  plannedDate: eventPlannedDateSchema,
+                },
+                required: ['title', 'plannedDate'],
+              },
+              headers: {
+                type: 'object',
+                properties: {
+                  authorization: eventAuthSchema,
+                },
+                required: ['authorization'],
+              },
+            },
+          },
+          createEventRoute,
+        );
+
+        //get all events
+
+        protectedInstance.get(
+          '/getEvents',
+          {
+            schema: {
+              tags: ['Events'],
+              description: 'Get events',
+              summary: 'Get events',
+              headers: {
+                type: 'object',
+                properties: {
+                  authorization: eventAuthSchema,
+                },
+                required: ['authorization'],
+              },
+            },
+          },
+          getEventsRoute,
+        );
 
         protectedInstance.get(
           '',
