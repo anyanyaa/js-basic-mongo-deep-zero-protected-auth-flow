@@ -12,7 +12,6 @@ export const eventService = {
 
   async createEvent(title, plannedDate, userId) {
     const event = new EventModel({
-      _id: new Types.ObjectId(),
       title,
       plannedDate,
       userId: new Types.ObjectId(userId),

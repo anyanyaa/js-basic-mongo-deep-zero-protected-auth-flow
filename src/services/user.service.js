@@ -11,7 +11,6 @@ export const userService = {
   //сохраняем юзера в базу данных монго
   async createUser(username, email, password) {
     const user = new User({
-      _id: new Types.ObjectId(),
       username,
       email,
       password: await hash(password, 10),

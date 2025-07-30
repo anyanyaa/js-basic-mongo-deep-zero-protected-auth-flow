@@ -7,7 +7,6 @@ import {
 import { createUserRoute } from './routes/user/createUser.js';
 import { loginUserRoute } from './routes/user/loginUser.js';
 import { authUser } from './hooks/authUser.js';
-import { eventService } from './services/event.service.js';
 import {
   eventAuthSchema,
   eventPlannedDateSchema,
@@ -122,7 +121,7 @@ server.register(
         //get all events
 
         protectedInstance.get(
-          '/getEvents',
+          '/event',
           {
             schema: {
               tags: ['Events'],

@@ -7,5 +7,5 @@ export const getEventsRoute = async (request, reply) => {
 
   const allEvents = await eventService.getEvents(id, limit, offset);
 
-  reply.status(200).send(allEvents);
+  reply.send(allEvents);
 };
