@@ -21,4 +21,8 @@ export const eventService = {
 
     return event;
   },
+
+  async removeEvent(userId, eventId) {
+    await EventModel.deleteOne({ userId, _id: eventId });
+  },
 };

@@ -9,11 +9,15 @@ import { loginUserRoute } from './routes/user/loginUser.js';
 import { authUser } from './hooks/authUser.js';
 import {
   eventAuthSchema,
+  eventParamsIdSchema,
   eventPlannedDateSchema,
+  eventQueryLimitSchema,
+  eventQueryOffsetSchema,
   eventTitleSchema,
 } from './schemas/eventSchemas.js';
 import { createEventRoute } from './routes/event/createEvent.js';
 import { getEventsRoute } from './routes/event/getEvents.js';
+import { deleteEventRoute } from './routes/event/deleteEvent.js';
 
 export const server = await initializeServer();
 
@@ -118,7 +122,7 @@ server.register(
           createEventRoute,
         );
 
-        //get all events
+        //get events
 
         protectedInstance.get(
           '/event',
@@ -137,21 +141,42 @@ server.register(
               querystring: {
                 type: 'object',
                 properties: {
-                  limit: {
-                    type: 'number',
-                    minimum: 1,
-                    maximum: 30,
-                  },
-                  offset: {
-                    type: 'number',
-                    minimum: 0,
-                  },
+                  limit: eventQueryLimitSchema,
+                  offset: eventQueryOffsetSchema,
                 },
                 required: ['limit', 'offset'],
               },
             },
           },
           getEventsRoute,
+        );
+
+        //delete event
+
+        protectedInstance.delete(
+          '/event/:id',
+          {
+            schema: {
+              tags: ['Events'],
+              description: 'Delete event',
+              summary: 'Delete event',
+              headers: {
+                type: 'object',
+                properties: {
+                  authorization: eventAuthSchema,
+                },
+                required: ['authorization'],
+              },
+              params: {
+                type: 'object',
+                properties: {
+                  id: eventParamsIdSchema,
+                },
+                required: ['id'],
+              },
+            },
+          },
+          deleteEventRoute,
         );
 
         protectedInstance.get(

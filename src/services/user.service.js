@@ -1,5 +1,4 @@
 import { User } from '../db/User.js';
-import { Types } from 'mongoose';
 import { hash } from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 

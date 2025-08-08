@@ -6,5 +6,8 @@ export const createEventRoute = async (request, reply) => {
 
   const event = await eventService.createEvent(title, plannedDate, id);
 
-  reply.send(event);
+  reply.send({
+    message: 'Successful created event',
+    event,
+  });
 };
