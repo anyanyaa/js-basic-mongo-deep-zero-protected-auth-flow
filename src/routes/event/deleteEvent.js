@@ -8,7 +8,5 @@ export const deleteEventRoute = async (request, reply) => {
 
   await eventService.removeEvent(user.id, id);
 
-  reply.status(204).send({
-    message: 'Event successfully deleted',
-  });
+  reply.status(204);
 };
