@@ -1,14 +1,12 @@
-import { User } from '../db/User.js';
+import { User } from '../db/User';
 import { hash } from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
-
-const { sign, verify } = jwt.default;
+import { sign, verify } from 'jsonwebtoken';
 
 export const userService = {
   SECRET_KEY: 'Secret key',
 
   //сохраняем юзера в базу данных монго
-  async createUser(username, email, password) {
+  async createUser(username: string, email: string, password: string) {
     const user = new User({
       username,
       email,
@@ -22,7 +20,7 @@ export const userService = {
 
   //получаем токен, логинимся
 
-  async loginUser(id) {
+  async loginUser(id: string): Promise<string> {
     return sign({ id }, this.SECRET_KEY, {
       expiresIn: '2h',
     });
@@ -30,7 +28,7 @@ export const userService = {
 
   //проверяем актуальность сессии
 
-  async getUserByToken(token) {
-    return verify(token, this.SECRET_KEY);
+  async getUserByToken(token: string): Promise<{ id: string }> {
+    return verify(token, this.SECRET_KEY) as unknown as { id: string };
   },
 };

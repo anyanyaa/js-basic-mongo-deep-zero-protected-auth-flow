@@ -1,8 +1,11 @@
-import { User } from '../../db/User.js';
-import { userService } from '../../services/user.service.js';
-import { compare, hash } from 'bcrypt';
+import { User } from '../../db/User';
+import { userService } from '../../services/user.service';
+import { compare } from 'bcrypt';
+import { RouteHandler } from 'fastify';
 
-export const loginUserRoute = async (request, reply) => {
+export const loginUserRoute: RouteHandler<{
+  Body: { email: string; username: string; password: string };
+}> = async (request, reply) => {
   const { email, username, password } = request.body;
 
   const currentUser = await User.findOne(email ? { email } : { username });
@@ -21,7 +24,7 @@ export const loginUserRoute = async (request, reply) => {
     });
   }
 
-  const token = await userService.loginUser(currentUser._id);
+  const token = await userService.loginUser(currentUser._id.toString());
 
   reply.status(201).send({
     message: 'Successful login',

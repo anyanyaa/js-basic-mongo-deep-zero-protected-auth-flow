@@ -1,12 +1,12 @@
-import { initializeServer } from './initializers/initializeServer.js';
+import { initializeServer } from './initializers/initializeServer';
 import {
   userEmailSchema,
   userPasswordSchema,
   userUsernameSchema,
-} from './schemas/userSchemas.js';
-import { createUserRoute } from './routes/user/createUser.js';
-import { loginUserRoute } from './routes/user/loginUser.js';
-import { authUser } from './hooks/authUser.js';
+} from './schemas/userSchemas';
+import { createUserRoute } from './routes/user/createUser';
+import { loginUserRoute } from './routes/user/loginUser';
+import { authUser } from './hooks/authUser';
 import {
   eventAuthSchema,
   eventParamsIdSchema,

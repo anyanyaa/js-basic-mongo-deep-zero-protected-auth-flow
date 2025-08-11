@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { server } from './server.js';
+import { server } from './server.ts';
 import { connectToMongoose } from './initializers/connectToMongoose.js';
 
 describe('Basic test server', () => {

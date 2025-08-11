@@ -1,7 +1,11 @@
-import { User } from '../../db/User.js';
-import { userService } from '../../services/user.service.js';
+import { User } from '../../db/User';
+import { userService } from '../../services/user.service';
+import { RouteHandler } from 'fastify';
 
-export const createUserRoute = async (request, reply) => {
+export const createUserRoute: RouteHandler<{
+  Body: { username: string; email: string; password: string };
+  Reply: { 400: { message: string }; 201: { message: string } };
+}> = async (request, reply) => {
   const { username, email, password } = request.body;
 
   const currentUserByEmail = await User.findOne({ email });

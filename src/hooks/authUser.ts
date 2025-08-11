@@ -1,6 +1,9 @@
-import { userService } from '../services/user.service.js';
+import { userService } from '../services/user.service';
+import { RouteHandler } from 'fastify';
 
-export const authUser = async (request, reply) => {
+export const authUser: RouteHandler<{
+  Headers: { authorization: string };
+}> = async (request, reply) => {
   try {
     const user = await userService.getUserByToken(
       request.headers.authorization,
