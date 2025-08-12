@@ -1,6 +1,6 @@
 import './types/fastify.ts';
 import { server } from './server';
-import { connectToMongoose } from './initializers/connectToMongoose.js';
+import { connectToMongoose } from './initializers/connectToMongoose';
 
 connectToMongoose('mongodb://root:example@localhost:27019/').then(() => {
   return server
