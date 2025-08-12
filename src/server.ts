@@ -14,10 +14,10 @@ import {
   eventQueryLimitSchema,
   eventQueryOffsetSchema,
   eventTitleSchema,
-} from './schemas/eventSchemas.js';
-import { createEventRoute } from './routes/event/createEvent.js';
-import { getEventsRoute } from './routes/event/getEvents.js';
-import { deleteEventRoute } from './routes/event/deleteEvent.js';
+} from './schemas/eventSchemas';
+import { createEventRoute } from './routes/event/createEvent';
+import { getEventsRoute } from './routes/event/getEvents';
+import { deleteEventRoute } from './routes/event/deleteEvent';
 
 export const server = await initializeServer();
 

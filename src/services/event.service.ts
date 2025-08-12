@@ -1,8 +1,8 @@
-import { EventModel } from '../db/Event.js';
+import { EventModel } from '../db/Event';
 import { Types } from 'mongoose';
 
 export const eventService = {
-  async getEvents(userId, limit, offset) {
+  async getEvents(userId: string, limit: number, offset: number) {
     const filter = { userId };
     const events = await EventModel.find(filter).skip(offset).limit(limit);
     const count = await EventModel.countDocuments(filter);
@@ -10,7 +10,7 @@ export const eventService = {
     return { items: events, count };
   },
 
-  async createEvent(title, plannedDate, userId) {
+  async createEvent(title: string, plannedDate: Date, userId: string) {
     const event = new EventModel({
       title,
       plannedDate,
@@ -22,7 +22,10 @@ export const eventService = {
     return event;
   },
 
-  async removeEvent(userId, eventId) {
-    await EventModel.deleteOne({ userId, _id: eventId });
+  async removeEvent(userId: string, eventId: string) {
+    await EventModel.deleteOne({
+      userId: new Types.ObjectId(userId),
+      _id: new Types.ObjectId(eventId),
+    });
   },
 };

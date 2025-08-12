@@ -1,6 +1,9 @@
-import { eventService } from '../../services/event.service.js';
+import { eventService } from '../../services/event.service';
+import { RouteHandler } from 'fastify';
 
-export const createEventRoute = async (request, reply) => {
+export const createEventRoute: RouteHandler<{
+  Body: { title: string; plannedDate: Date };
+}> = async (request, reply) => {
   const { title, plannedDate } = request.body;
   const { id } = request.user;
 
