@@ -3,3 +3,4 @@ declare module 'fastify' {
     user: { id: string };
   }
 }
+export {}
