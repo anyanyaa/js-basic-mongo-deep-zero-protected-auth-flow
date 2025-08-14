@@ -1,6 +1,8 @@
 import { User } from '../db/User';
 import { hash } from 'bcrypt';
-import { sign, verify } from 'jsonwebtoken';
+import JWT from 'jsonwebtoken';
+
+const { sign, verify } = JWT;
 
 export const userService = {
   SECRET_KEY: 'Secret key',
