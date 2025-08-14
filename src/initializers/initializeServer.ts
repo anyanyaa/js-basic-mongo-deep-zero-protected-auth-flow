@@ -19,7 +19,14 @@ export const initializeServer = async () => {
     },
   }).withTypeProvider();
 
-  await server.register(fastifyCors);
+  // await server.register(fastifyCors);
+
+  await server.register(fastifyCors, {
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
+
   await server.register(fastifyCookie);
   await server.register(fastifySwagger);
   await server.register(fastifySwaggerUi);
